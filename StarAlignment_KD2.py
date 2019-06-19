@@ -2,9 +2,9 @@ import os, sys
 
 exp, file= sys.argv[1], sys.argv[2]
 
-rootpath= '/home/colin/Root/%s/%s' % (exp,file)
-ncrnaDir= '/home/colin/bowtie/indexes/rna/star_scer3'
-genomeDir= '/home/colin/bowtie/indexes/chromosome/star_scer3_KD2'
+rootpath= '/home/xxx/Root/%s/%s' % (exp,file)
+ncrnaDir= '/home/xxx/index/rna/star_scer3'
+genomeDir= '/home/xxx/star/index/chromosome/star_scer3_KD2'
 
 # mismatch
 mismatch= 0.1         #outFilterMismatchNoverLmax
