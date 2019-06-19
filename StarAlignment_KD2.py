@@ -6,10 +6,9 @@ rootpath= '/home/xxx/Root/%s/%s' % (exp,file)
 ncrnaDir= '/home/xxx/index/rna/star_scer3'
 genomeDir= '/home/xxx/star/index/chromosome/star_scer3_KD2'
 
-# mismatch
-mismatch= 0.1         #outFilterMismatchNoverLmax
-adapterseq= 'NNNNNNCACTCGGGCACCAAGGA' #linker2     or   # CTGTAGGCACCATCAAT     #linker1
-remove_duplicate= 'False'   # or 'False'
+mismatch= 0.1
+adapterseq= 'NNNNNNCACTCGGGCACCAAGGA' #linker2
+remove_duplicate= 'False'
 
 ############################################################################################################################################
 filein= '%s/%s.fastq.gz' %(rootpath,file)
@@ -20,14 +19,12 @@ ncrna_outfile= '%s/%s_Unmapped.fastq.gz' %(ncrna_outpath,file)
 if not os.path.exists(ncrna_outpath):   os.makedirs(ncrna_outpath)
 
 if not os.path.exists(ncrna_outfile):
-    # De-duplicate reads
     tallyout= '%s/%s_tally.fastq.gz' %(tempfolder,file)
     CMMD= 'tally --with-quality -i %s -o %s' %(filein,tallyout)
     if remove_duplicate== 'True':
         print CMMD
         os.system(CMMD)
     
-    # Trim 5'end of reads
     if remove_duplicate== 'True':   inputfile= tallyout
     else:   inputfile= filein
 
@@ -38,14 +35,11 @@ if not os.path.exists(ncrna_outfile):
         print CMMD1
         os.system(CMMD1)
         
-    # Remove adapter
     if not os.path.exists(starInput):
-        #CMMD2= 'skewer -x CTGTAGGCACCATCAAT -l 15 %s -o %s/%s.fastq' %(inputfile,tempfolder,file)    # linker1
-        CMMD2= 'skewer -t 32 -x %s -l 10 %s' %(adapterseq,trimmedfastq)  # barcoded linker2
+        CMMD2= 'skewer -t 32 -x %s -l 10 %s' %(adapterseq,trimmedfastq)
         print CMMD2
         os.system(CMMD2)
 
-    # Remove ncrna
     if os.path.exists(starInput):
         CMMD3= 'STAR --runThreadN 45 --readFilesIn %s --genomeDir %s --limitBAMsortRAM 6000000000 --alignEndsType Local --alignEndsProtrude 15 DiscordantPair --outSAMtype BAM SortedByCoordinate --outReadsUnmapped Fastx --outFilterMismatchNoverLmax 0.3 --outFileNamePrefix %s/' %(starInput,ncrnaDir,ncrna_outpath)
         print CMMD3
@@ -55,7 +49,6 @@ if not os.path.exists(ncrna_outfile):
         print command
         os.system(command)
 
-# Align to genome
 outfolder= '%s/%s_starM01/' %(rootpath,file)
 if not os.path.exists(outfolder):  os.makedirs(outfolder)
 outfile= '%sAligned.sortedByCoord.out.bam' %(outfolder)
